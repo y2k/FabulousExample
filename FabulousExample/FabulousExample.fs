@@ -1,59 +1,57 @@
-﻿// Copyright 2018 Fabulous contributors. See LICENSE.md for license.
-namespace FabulousExample
+﻿namespace FabulousExample
 
 open System.Diagnostics
 open Fabulous.Core
 open Fabulous.DynamicViews
 open Xamarin.Forms
 
+module Services =
+
+    let loadCountries = 
+        async {
+            do! Async.Sleep 1500
+            return [ "Russia"; "USA"; "Germany" ]
+        }
+
 module App = 
     type Model = 
-      { Count : int
-        Step : int
-        TimerOn: bool }
+      { countries: string list
+        selectedCountry : int option }
 
     type Msg = 
-        | Increment 
-        | Decrement 
-        | Reset
-        | SetStep of int
-        | TimerToggled of bool
-        | TimedTick
+        | SelectCountryChanged of int
+        | CountriesLoaded of string list
 
-    let initModel = { Count = 0; Step = 1; TimerOn=false }
+    let initModel = { countries = []; selectedCountry = None }
 
-    let init () = initModel, Cmd.none
-
-    let timerCmd = 
-        async { do! Async.Sleep 200
-                return TimedTick }
-        |> Cmd.ofAsyncMsg
+    let init () = initModel, Cmd.ofAsyncMsg <| async { let! xs = Services.loadCountries; 
+                                                       return CountriesLoaded xs }
 
     let update msg model =
         match msg with
-        | Increment -> { model with Count = model.Count + model.Step }, Cmd.none
-        | Decrement -> { model with Count = model.Count - model.Step }, Cmd.none
-        | Reset -> init ()
-        | SetStep n -> { model with Step = n }, Cmd.none
-        | TimerToggled on -> { model with TimerOn = on }, (if on then timerCmd else Cmd.none)
-        | TimedTick -> 
-            if model.TimerOn then 
-                { model with Count = model.Count + model.Step }, timerCmd
-            else 
-                model, Cmd.none
+        | SelectCountryChanged x -> { model with selectedCountry = Some x }, Cmd.none
+        | CountriesLoaded xs -> { model with countries = xs }, Cmd.none
 
     let view (model: Model) dispatch =
         View.ContentPage(
           content = View.StackLayout(padding = 20.0, verticalOptions = LayoutOptions.Center,
             children = [ 
-                View.Label(text = sprintf "%d" model.Count, horizontalOptions = LayoutOptions.Center, widthRequest=200.0, horizontalTextAlignment=TextAlignment.Center)
-                View.Button(text = "Increment", command = (fun () -> dispatch Increment), horizontalOptions = LayoutOptions.Center)
-                View.Button(text = "Decrement", command = (fun () -> dispatch Decrement), horizontalOptions = LayoutOptions.Center)
-                View.Label(text = "Timer", horizontalOptions = LayoutOptions.Center)
-                View.Switch(isToggled = model.TimerOn, toggled = (fun on -> dispatch (TimerToggled on.Value)), horizontalOptions = LayoutOptions.Center)
-                View.Slider(minimumMaximum = (0.0, 10.0), value = double model.Step, valueChanged = (fun args -> dispatch (SetStep (int (args.NewValue + 0.5)))), horizontalOptions = LayoutOptions.FillAndExpand)
-                View.Label(text = sprintf "Step size: %d" model.Step, horizontalOptions = LayoutOptions.Center) 
-                View.Button(text = "Reset", horizontalOptions = LayoutOptions.Center, command = (fun () -> dispatch Reset), canExecute = (model <> initModel))
+
+                View.Picker(title = (if model.countries.Length = 0 then "Loading..." else "Select country"),
+                            itemsSource = model.countries, 
+                            selectedIndex = (model.selectedCountry |> Option.defaultValue -1),
+                            selectedIndexChanged = (fun (x,_) -> dispatch <| SelectCountryChanged x))
+
+                View.Picker(title = (if model.countries.Length = 0 then "Loading..." else "Select region"),
+                            itemsSource = model.countries, 
+                            selectedIndex = (model.selectedCountry |> Option.defaultValue -1),
+                            selectedIndexChanged = (fun (x,_) -> dispatch <| SelectCountryChanged x))
+
+                View.Picker(title = (if model.countries.Length = 0 then "Loading..." else "Select city"),
+                            itemsSource = model.countries, 
+                            selectedIndex = (model.selectedCountry |> Option.defaultValue -1),
+                            selectedIndexChanged = (fun (x,_) -> dispatch <| SelectCountryChanged x))
+
             ]))
 
     // Note, this declaration is needed if you enable LiveUpdate
@@ -107,5 +105,3 @@ type App () as app =
         Console.WriteLine "OnStart: using same logic as OnResume()"
         this.OnResume()
 #endif
-
-
