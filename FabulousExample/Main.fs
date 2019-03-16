@@ -1,9 +1,5 @@
 module FabulousExample.Main
 
-open Fabulous.Core
-open Fabulous.DynamicViews
-open Xamarin.Forms
-
 [<AutoOpen>]
 module Operators =
     let inline (>>-) a f = async { let! x = a
@@ -29,6 +25,10 @@ module Services =
     let loadCities country region =
         sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country region key
         |> CityProvider.AsyncLoad
+
+open Fabulous.Core
+open Fabulous.DynamicViews
+open Xamarin.Forms
 
 type Model =
     { countries : Services.CountryProvider.Root array
@@ -83,33 +83,22 @@ let update msg model =
     | CitiesLoaded xs -> { model with cities = xs; isLoading = false }, Cmd.none
     | CitySelected id -> { model with selectedCity = Some id }, Cmd.none
 
+let viewPicker items selectedItem onSelected =
+    View.Picker
+        (title = (if (Array.isEmpty items) then "Loading..." else "Select"),
+         isEnabled = (not <| Array.isEmpty items),
+         itemsSource = items,
+         selectedIndex = (selectedItem |> Option.defaultValue -1),
+         selectedIndexChanged = (fun (x, _) -> onSelected x))
+
 let view (model : Model) dispatch =
-    View.ContentPage
-        (content = View.StackLayout
-                       (padding = 20.0, verticalOptions = LayoutOptions.Center, isEnabled = not model.isLoading,
-                        children = [ View.Picker
-                                         (title = (if model.countries.Length = 0 then "Loading..."
-                                                   else "Select country"),
-                                          isEnabled = (not <| Array.isEmpty model.countries),
-                                          itemsSource = (model.countries |> Array.map (fun x -> x.Name)),
-                                          selectedIndex = (model.selectedCountry |> Option.defaultValue -1),
-                                          selectedIndexChanged = (fun (x, _) -> dispatch <| CountrySelected x))
+    View.ContentPage(
+        content = View.StackLayout(
+            padding = 20.0, verticalOptions = LayoutOptions.Center, isEnabled = not model.isLoading,
+            children = [ 
+                viewPicker (model.countries |> Array.map (fun x -> x.Name)) model.selectedCountry (CountrySelected >> dispatch)
+                viewPicker (model.states |> Array.map (fun x -> x.Region)) model.selectedState (StateSelected >> dispatch)
+                viewPicker (model.cities |> Array.map (fun x -> x.City)) model.selectedCity (CitySelected >> dispatch)
+            ]))
 
-                                     View.Picker
-                                         (title = (if model.states.Length = 0 then "Loading..."
-                                                   else "Select region"),
-                                          isEnabled = (not <| Array.isEmpty model.states),
-                                          itemsSource = (model.states |> Array.map (fun x -> x.Region)),
-                                          selectedIndex = (model.selectedCountry |> Option.defaultValue -1),
-                                          selectedIndexChanged = (fun (x, _) -> dispatch <| StateSelected x))
-
-                                     View.Picker
-                                         (title = (if model.cities.Length = 0 then "Loading..."
-                                                   else "Select city"),
-                                          isEnabled = (not <| Array.isEmpty model.cities),
-                                          itemsSource = (model.cities |> Array.map (fun x -> x.City)),
-                                          selectedIndex = (model.selectedCountry |> Option.defaultValue -1),
-                                          selectedIndexChanged = (fun (x, _) -> dispatch <| CitySelected x)) ]))
-
-// Note, this declaration is needed if you enable LiveUpdate
 let program = Program.mkProgram init update view
