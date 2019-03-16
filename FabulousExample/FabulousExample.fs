@@ -5,8 +5,8 @@ open Xamarin.Forms
 
 type App() as app =
     inherit Application()
-    let runner =
-        Main.program
+    let runner = 
+        Program.mkProgram Page.init Page.update Page.view
 #if DEBUG
         |> Program.withConsoleTrace
 #endif
