@@ -15,7 +15,7 @@ module Services =
 
     let private key =
         System.Convert.FromBase64String "5dMq1voyzgIG+QH+BS7QATD/1P4r1vkDLwT+0//7M9M="
-        |> fun x -> System.String(Array.map char (Array.scan (+) 127uy x))
+        |> (Array.scan (+) 127uy >> Array.map char >> System.String)
 
     let loadCountries =
         sprintf "https://battuta.medunes.net/api/country/all/?key=%s" key 
@@ -45,9 +45,9 @@ module Page =
 
     type Msg =
         | CountriesLoaded of Services.CountryProvider.Root array
-        | ItemSelected of Target * int
         | StatesLoaded of Services.StateProvider.Root array
         | CitiesLoaded of Services.CityProvider.Root array
+        | ItemSelected of Target * int
 
     let initModel =
         { countries = [||]; states = [||]; cities = [||]
@@ -82,12 +82,12 @@ module Page =
             | City -> { model with selectedCity = Some id }, Cmd.none
 
     let viewPicker items map selectedItem onSelected =
-        View.Picker
-            (title = (if (Array.isEmpty items) then "Loading..." else "Select"),
-             isEnabled = (not <| Array.isEmpty items),
-             itemsSource = (items |> Array.map map),
-             selectedIndex = (selectedItem |> Option.defaultValue -1),
-             selectedIndexChanged = (fun (x, _) -> onSelected x))
+        View.Picker(
+            title = (if (Array.isEmpty items) then "Loading..." else "Select"),
+            isEnabled = (not <| Array.isEmpty items),
+            itemsSource = (items |> Array.map map),
+            selectedIndex = (selectedItem |> Option.defaultValue -1),
+            selectedIndexChanged = (fun (x, _) -> onSelected x))
 
     let view model dispatch =
         View.ContentPage(
