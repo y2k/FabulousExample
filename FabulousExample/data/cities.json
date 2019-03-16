@@ -1,0 +1,135 @@
+[
+    {
+        "city": "Admiralteysky Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.92337036",
+        "longitude": "30.29822922"
+    },
+    {
+        "city": "Frunzenskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.91667175",
+        "longitude": "30.33333015"
+    },
+    {
+        "city": "Kalininskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.99074936",
+        "longitude": "30.37170029"
+    },
+    {
+        "city": "Kirovskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.86666870",
+        "longitude": "30.28333092"
+    },
+    {
+        "city": "Kolpinskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.78041840",
+        "longitude": "30.58628082"
+    },
+    {
+        "city": "Krasnogvardeyskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.97288132",
+        "longitude": "30.47057915"
+    },
+    {
+        "city": "Krasnosel\u0027skiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.85776901",
+        "longitude": "30.22131920"
+    },
+    {
+        "city": "Kronshtadtskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.99813080",
+        "longitude": "29.75304031"
+    },
+    {
+        "city": "Kurortnyy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "60.17601013",
+        "longitude": "29.87388992"
+    },
+    {
+        "city": "Moskovskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.85446930",
+        "longitude": "30.32982063"
+    },
+    {
+        "city": "Nevskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.89204025",
+        "longitude": "30.45340919"
+    },
+    {
+        "city": "Petrodvortsovyy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.88687134",
+        "longitude": "29.84469986"
+    },
+    {
+        "city": "Petrogradskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.96667099",
+        "longitude": "30.29999924"
+    },
+    {
+        "city": "Primorskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.99623871",
+        "longitude": "30.24090004"
+    },
+    {
+        "city": "Pushkinskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.73875046",
+        "longitude": "30.34560966"
+    },
+    {
+        "city": "Sestroretskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "60.08332825",
+        "longitude": "30.00000000"
+    },
+    {
+        "city": "Tsentralniy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.94572830",
+        "longitude": "30.39162064"
+    },
+    {
+        "city": "Vasileostrovskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "59.93970871",
+        "longitude": "30.26115036"
+    },
+    {
+        "city": "Vyborgskiy Rayon",
+        "region": "Sankt-Peterburg",
+        "country": "ru",
+        "latitude": "60.05662155",
+        "longitude": "30.36621094"
+    }
+]

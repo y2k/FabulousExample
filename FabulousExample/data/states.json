@@ -1,0 +1,334 @@
+[
+    {
+        "region": "Altayskiy Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Amurskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Arkhangel\u0027skaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Astrakhanskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Bashkortostan",
+        "country": "ru"
+    },
+    {
+        "region": "Belgorodskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Bryanskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Chechenskaya Respublika",
+        "country": "ru"
+    },
+    {
+        "region": "Chelyabinskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Chukotskiy Avtonomnyy Okrug",
+        "country": "ru"
+    },
+    {
+        "region": "Chuvashskaya Respublika",
+        "country": "ru"
+    },
+    {
+        "region": "Dagestan",
+        "country": "ru"
+    },
+    {
+        "region": "Irkutskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Ivanovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Kabardino-Balkarskaya Respublika",
+        "country": "ru"
+    },
+    {
+        "region": "Kaliningradskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Kalmykiya",
+        "country": "ru"
+    },
+    {
+        "region": "Kaluzhskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Kamtchatski Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Karachayevo-Cherkesiya",
+        "country": "ru"
+    },
+    {
+        "region": "Kemerovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Khabarovskiy Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Khanty-Mansiyskiy Avtonomnyy Okrug-Yugra",
+        "country": "ru"
+    },
+    {
+        "region": "Kirovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Komi",
+        "country": "ru"
+    },
+    {
+        "region": "Kostromskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Krasnodarskiy Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Krasnoyarskiy Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Kurganskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Kurskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Leningradskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Lipetskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Magadanskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Moscow Oblast",
+        "country": "ru"
+    },
+    {
+        "region": "Moskva",
+        "country": "ru"
+    },
+    {
+        "region": "Murmanskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Nenetskiy Avtonomnyy Okrug",
+        "country": "ru"
+    },
+    {
+        "region": "Nizhegorodskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "North Ossetia",
+        "country": "ru"
+    },
+    {
+        "region": "Novgorodskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Novosibirskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Omskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Orenburgskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Orlovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Penzenskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Perm Krai",
+        "country": "ru"
+    },
+    {
+        "region": "Primorskiy Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Pskovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Adygeya",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Altay",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Buryatiya",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Ingushetiya",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Kareliya",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Khakasiya",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Mariy-El",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Mordoviya",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Sakha (Yakutiya)",
+        "country": "ru"
+    },
+    {
+        "region": "Respublika Tyva",
+        "country": "ru"
+    },
+    {
+        "region": "Rostovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Ryazanskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Sakhalinskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Samarskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Sankt-Peterburg",
+        "country": "ru"
+    },
+    {
+        "region": "Saratovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Smolenskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Stavropol\u0027skiy Kray",
+        "country": "ru"
+    },
+    {
+        "region": "Sverdlovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Tambovskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Tatarstan",
+        "country": "ru"
+    },
+    {
+        "region": "Tomskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Tul\u0027skaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Tverskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Tyumenskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Udmurtskaya Respublika",
+        "country": "ru"
+    },
+    {
+        "region": "Ulyanovsk Oblast",
+        "country": "ru"
+    },
+    {
+        "region": "Vladimirskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Volgogradskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Vologodskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Voronezhskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Yamalo-Nenetskiy Avtonomnyy Okrug",
+        "country": "ru"
+    },
+    {
+        "region": "Yaroslavskaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Yevreyskaya Avtonomnaya Oblast\u0027",
+        "country": "ru"
+    },
+    {
+        "region": "Zabaykal\u0027skiy Kray",
+        "country": "ru"
+    }
+]
