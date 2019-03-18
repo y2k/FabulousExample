@@ -83,7 +83,7 @@ module Page =
 
     let viewPicker items map selectedItem onSelected =
         View.Picker(
-            title = (if (Array.isEmpty items) then "Loading..." else "Select"),
+            title = (if Array.isEmpty items then "Loading..." else "Select"),
             isEnabled = (not <| Array.isEmpty items),
             itemsSource = (items |> Array.map map),
             selectedIndex = (selectedItem |> Option.defaultValue -1),
