@@ -23,9 +23,71 @@ module Services =
     let loadStates country =
         sprintf "https://battuta.medunes.net/api/region/%s/all/?key=%s" country key 
         |> StateProvider.AsyncLoad
+
+    module Domain =
+        let mkLoadCities country state =
+            sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key
+            |> System.Uri
+        let parseCities = CityProvider.Parse
+
+    module CoEffects = 
+        open System.Net
+        let downloadString (url : System.Uri) = 
+            async { return! (new WebClient()).DownloadStringTaskAsync url |> Async.AwaitTask }
+        let downloadString' (url : System.Uri) = 
+            {|url=url|}, async { return! (new WebClient()).DownloadStringTaskAsync url |> Async.AwaitTask }
+
+    open Fabulous.Core
+    type Msg' =
+        | CitiesLoaded' of CityProvider.Root array
+    module Cmd =
+        let ofAsync f a = async { let! x = a
+                                  return f x } |> Cmd.ofAsyncMsg
+
     let loadCities country state =
-        sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key
-        |> CityProvider.AsyncLoad
+        Domain.mkLoadCities country state 
+        |> string |> CityProvider.AsyncLoad
+
+    let inline (<+>) (a : 'b * ('a Async)) f = (fst a, (snd a) >>- f), f
+
+    module Domain' =
+        let loadCities country state =
+            sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key
+            |> System.Uri
+            |> CoEffects.downloadString'
+            <+> Domain.parseCities
+
+    module Cmd' =
+        let ofEffect f ((_, a), _) = async { let! x = a
+                                             return f x } |> Cmd.ofAsyncMsg
+
+    let test' () =
+        let ((x, a), f) = Domain'.loadCities "ru" "moscow"
+        printfn "Uri = %O" x.url
+        printfn "Parsed = %O" (f "{}")        
+        let ar = a |> Async.RunSynchronously
+        printfn "Effect = %O" ar
+        let cmd = 
+            Domain'.loadCities "ru" "moscow"
+            |> Cmd'.ofEffect CitiesLoaded'
+        ()    
+
+    let loadCities' country state = 
+        Domain.mkLoadCities country state
+        |> CoEffects.downloadString
+        >>- CityProvider.Parse
+
+    let test () =
+        loadCities' "ru" "moscow"
+        |> Cmd.ofAsync CitiesLoaded' |> ignore
+
+        Domain.mkLoadCities "ru" "moscow"
+        |> CoEffects.downloadString
+        >>- Domain.parseCities
+        |> Cmd.ofAsync CitiesLoaded'
+
+    let loadCities'' country state = 
+        failwith "???"
 
 module Page =
     open Fabulous.Core
