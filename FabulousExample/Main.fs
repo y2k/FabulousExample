@@ -5,9 +5,13 @@ module Utils =
     let inline (>>-) a f = async { let! x = a
                                    return f x }
     let inline curry f a b = f (a, b)
-    let inline (<+>) (a : 'b * ('a Async)) f = (fst a, (snd a) >>- f), f
-    let inline (<+!>) (a : 'b * ('a, exn) Result Async) f = 
-        (fst a, (snd a) >>- (fun xr -> match xr with | Ok x -> Ok <| f x | Error e -> Error e)), f
+    let inline (<*>) ((a, b), c) f = 
+        let g = async {
+            let! xr = b
+            let e = match xr with | Ok x -> Ok <| f x | Error e -> Error e
+            return e
+        }
+        (a, g), c >> f
     type 'a Effect = 'a * ('a, exn) Result Async
 
     module Async =
@@ -20,7 +24,9 @@ module Utils =
 module Effects = 
     open System.Net
     let downloadString (url : System.Uri) = 
-        {|url=url|}, async { return! (new WebClient()).DownloadStringTaskAsync url |> Async.AwaitTask } |> Async.catch
+        ({| url = url |}, 
+         async { return! (new WebClient()).DownloadStringTaskAsync url |> Async.AwaitTask } |> Async.catch)
+        , id
 
 module Services =
     open FSharp.Data
@@ -46,15 +52,15 @@ module Services =
     let loadCountries' =
         sprintf "https://battuta.medunes.net/api/country/all/?key=%s" key |> System.Uri
         |> Effects.downloadString
-        <+!> CountryProvider.Parse
+        <*> CountryProvider.Parse
     let loadStates' country =
         sprintf "https://battuta.medunes.net/api/region/%s/all/?key=%s" country key |> System.Uri
         |> Effects.downloadString
-        <+!> StateProvider.Parse
+        <*> StateProvider.Parse
     let loadCities' country state =
         sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key |> System.Uri
         |> Effects.downloadString
-        <+!> CityProvider.Parse
+        <*> CityProvider.Parse
 
     type Msg' = CitiesLoaded' of (CityProvider.Root array, exn) Result
 
