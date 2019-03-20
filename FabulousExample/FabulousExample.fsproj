@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="EffectsExample.fs" />
     <Compile Include="Main.fs" />
     <Compile Include="FabulousExample.fs" />
   </ItemGroup>

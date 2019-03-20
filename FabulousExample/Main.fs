@@ -5,28 +5,6 @@ module Utils =
     let inline (>>-) a f = async { let! x = a
                                    return f x }
     let inline curry f a b = f (a, b)
-    let inline (<*>) ((a, b), c) f = 
-        let g = async {
-            let! xr = b
-            let e = match xr with | Ok x -> Ok <| f x | Error e -> Error e
-            return e
-        }
-        (a, g), c >> f
-    type 'a Effect = 'a * ('a, exn) Result Async
-
-    module Async =
-        let catch a = a |> Async.Catch >>- (fun x -> match x with | Choice1Of2 x -> Ok x | Choice2Of2 x -> Error x)
-    module Cmd =
-        open Fabulous.Core
-        let ofEffect f ((_, a), _) = async { let! x = a
-                                             return f x } |> Cmd.ofAsyncMsg
-
-module Effects = 
-    open System.Net
-    let downloadString (url : System.Uri) = 
-        ({| url = url |}, 
-         async { return! (new WebClient()).DownloadStringTaskAsync url |> Async.AwaitTask } |> Async.catch)
-        , id
 
 module Services =
     open FSharp.Data
@@ -47,28 +25,7 @@ module Services =
         |> StateProvider.AsyncLoad
     let loadCities country state =
         sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key
-        |> string |> CityProvider.AsyncLoad
-
-    let loadCountries' =
-        sprintf "https://battuta.medunes.net/api/country/all/?key=%s" key |> System.Uri
-        |> Effects.downloadString
-        <*> CountryProvider.Parse
-    let loadStates' country =
-        sprintf "https://battuta.medunes.net/api/region/%s/all/?key=%s" country key |> System.Uri
-        |> Effects.downloadString
-        <*> StateProvider.Parse
-    let loadCities' country state =
-        sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key |> System.Uri
-        |> Effects.downloadString
-        <*> CityProvider.Parse
-
-    type Msg' = CitiesLoaded' of (CityProvider.Root array, exn) Result
-
-    let test' () =
-        let ((x, a), f) = loadCities' "ru" "moscow"
-        let cmd = loadCities' "ru" "moscow" |> Cmd.ofEffect CitiesLoaded'
-        printfn "Assert = %O | Uri = %O | Parsed = %O" (x = {| url = System.Uri "" |}) x.url (f "{}")
-        printfn "Effect = %O" (a |> Async.RunSynchronously)
+        |> CityProvider.AsyncLoad
 
 module Page =
     open Fabulous.Core
