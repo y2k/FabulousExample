@@ -19,12 +19,13 @@ module Effects =
     open System
     let private catch a = async { let! x = a |> Async.Catch
                                   return x |> function Choice1Of2 x -> Ok x | Choice2Of2 x -> Error x }
+    let wrap arg (a : Async<'a>) : Effect<'a> =
+        box arg, (fun x -> box x :?> 'a), (a |> catch)
 
     type DownloadFromWeb = DownloadFromWeb of Uri
-    let downloadFromWeb (uri : Uri) : Effect<string> =
-        box <| DownloadFromWeb uri,
-        (fun x -> box x :?> string),
-        async { return! (new Net.WebClient()).DownloadStringTaskAsync uri |> Async.AwaitTask |> catch }
+    let downloadFromWeb (uri : Uri) =
+        async { return! (new Net.WebClient()).DownloadStringTaskAsync uri |> Async.AwaitTask }
+        |> wrap (DownloadFromWeb uri)
 
     let none<'a> : Effect<'a> =
         box (), (fun _ -> invalidOp ""), async.Return <| Error (Exception())
