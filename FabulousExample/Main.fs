@@ -18,10 +18,10 @@ module Services =
         |> (Array.scan (+) 127uy >> Array.map char >> System.String)
 
     let loadCountries =
-        sprintf "https://battuta.medunes.net/api/country/all/?key=%s" key 
+        sprintf "https://battuta.medunes.net/api/country/all/?key=%s" key
         |> CountryProvider.AsyncLoad
     let loadStates country =
-        sprintf "https://battuta.medunes.net/api/region/%s/all/?key=%s" country key 
+        sprintf "https://battuta.medunes.net/api/region/%s/all/?key=%s" country key
         |> StateProvider.AsyncLoad
     let loadCities country state =
         sprintf "https://battuta.medunes.net/api/city/%s/search/?region=%s&key=%s" country state key
@@ -41,7 +41,7 @@ module Page =
           selectedState : int option
           selectedCity : int option }
 
-    type Target = Country | State | City
+    type Target = | Country | State | City
 
     type Msg =
         | CountriesLoaded of Services.CountryProvider.Root array
@@ -51,7 +51,7 @@ module Page =
 
     let initModel =
         { countries = [||]; states = [||]; cities = [||]
-          selectedCountry = None; selectedState = None; selectedCity = None 
+          selectedCountry = None; selectedState = None; selectedCity = None
           isLoading = true }
 
     let init() = initModel, Cmd.ofAsyncMsg <| (Services.loadCountries >>- CountriesLoaded)
@@ -61,9 +61,9 @@ module Page =
         | CountriesLoaded xs -> { model with countries = xs; isLoading = false }, Cmd.none
         | StatesLoaded xs -> { model with states = xs; isLoading = false }, Cmd.none
         | CitiesLoaded xs -> { model with cities = xs; isLoading = false }, Cmd.none
-        | ItemSelected (target, id) ->
+        | ItemSelected(target, id) ->
             match target with
-            | Country -> 
+            | Country ->
                 { model with selectedCountry = Some id
                              selectedState = None
                              selectedCity = None
@@ -71,7 +71,7 @@ module Page =
                              states = [||]
                              cities = [||] },
                 Cmd.ofAsyncMsg (Services.loadStates (model.countries.[id].Code) >>- StatesLoaded)
-            | State -> 
+            | State ->
                 { model with selectedState = Some id
                              selectedCity = None
                              isLoading = true
@@ -82,7 +82,7 @@ module Page =
             | City -> { model with selectedCity = Some id }, Cmd.none
 
     let viewPicker items map selectedItem onSelected =
-        View.Picker(
+        View.Picker (
             title = (if Array.isEmpty items then "Loading..." else "Select"),
             isEnabled = (not <| Array.isEmpty items),
             itemsSource = (items |> Array.map map),
@@ -90,11 +90,11 @@ module Page =
             selectedIndexChanged = (fun (x, _) -> onSelected x))
 
     let view model dispatch =
-        View.ContentPage(
-            content = View.StackLayout(
-                padding = 20.0, verticalOptions = LayoutOptions.Center, 
+        View.ContentPage (
+            content = View.StackLayout (
+                padding = 20.0, verticalOptions = LayoutOptions.Center,
                 isEnabled = not model.isLoading,
-                children = [ 
+                children = [
                     viewPicker model.countries (fun x -> x.Name) model.selectedCountry (curry ItemSelected Country >> dispatch)
                     viewPicker model.states (fun x -> x.Region) model.selectedState (curry ItemSelected State >> dispatch)
                     viewPicker model.cities (fun x -> x.City) model.selectedCity (curry ItemSelected City >> dispatch) ]))

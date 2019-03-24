@@ -8,17 +8,17 @@ module Utils =
 
     type Effect<'a> = obj * (obj -> 'a) * Async<Result<'a, exn>>
 
-    let (<*>) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) (g : 'b -> 'c) : Effect<'c> = 
+    let (<*>) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) (g : 'b -> 'c) : Effect<'c> =
         box e, f >> g, async { let! x = a
                                return Result.map g x }
-    let (<*!>) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) (g : Result<'b, exn> -> 'c) : Effect<'c> = 
+    let (<*!>) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) (g : Result<'b, exn> -> 'c) : Effect<'c> =
         box e, f >> Ok >> g, async { let! x = a
                                      return Ok <| g x }
 
 module Effects =
     open System
     let private catch a = async { let! x = a |> Async.Catch
-                                  return x |> function Choice1Of2 x -> Ok x | Choice2Of2 x -> Error x }
+                                  return x |> function | Choice1Of2 x -> Ok x | Choice2Of2 x -> Error x }
     let wrap arg (a : Async<'a>) : Effect<'a> =
         box arg, (fun x -> box x :?> 'a), (a |> catch)
 
@@ -28,11 +28,11 @@ module Effects =
         |> wrap (DownloadFromWeb uri)
 
     let none<'a> : Effect<'a> =
-        box (), (fun _ -> invalidOp ""), async.Return <| Error (Exception())
+        box(), (fun _ -> invalidOp ""), async.Return <| Error(Exception())
 
 module Services =
-    open System
     open FSharp.Data
+    open System
 
     type CountryProvider = JsonProvider<"data/countries.json">
     type StateProvider = JsonProvider<"data/states.json">
@@ -69,7 +69,7 @@ module Page =
           selectedState : int option
           selectedCity : int option }
 
-    type Target = Country | State | City
+    type Target = | Country | State | City
 
     type Msg =
         | CountriesLoaded of Result<Services.CountryProvider.Root array, exn>
@@ -79,19 +79,19 @@ module Page =
 
     let initModel =
         { countries = [||]; states = [||]; cities = [||]
-          selectedCountry = None; selectedState = None; selectedCity = None 
+          selectedCountry = None; selectedState = None; selectedCity = None
           isLoading = true }
 
-    let init () = initModel, Services.loadCountries <*!> CountriesLoaded
+    let init() = initModel, Services.loadCountries <*!> CountriesLoaded
 
     let update msg model =
         match msg with
-        | CountriesLoaded (Ok xs) -> { model with countries = xs; isLoading = false }, Effects.none
-        | StatesLoaded (Ok xs) -> { model with states = xs; isLoading = false }, Effects.none
-        | CitiesLoaded (Ok xs) -> { model with cities = xs; isLoading = false }, Effects.none
-        | ItemSelected (target, id) ->
+        | CountriesLoaded(Ok xs) -> { model with countries = xs; isLoading = false }, Effects.none
+        | StatesLoaded(Ok xs) -> { model with states = xs; isLoading = false }, Effects.none
+        | CitiesLoaded(Ok xs) -> { model with cities = xs; isLoading = false }, Effects.none
+        | ItemSelected(target, id) ->
             match target with
-            | Country -> 
+            | Country ->
                 { model with selectedCountry = Some id
                              selectedState = None
                              selectedCity = None
@@ -99,7 +99,7 @@ module Page =
                              states = [||]
                              cities = [||] },
                 Services.loadStates (model.countries.[id].Code) <*!> StatesLoaded
-            | State -> 
+            | State ->
                 { model with selectedState = Some id
                              selectedCity = None
                              isLoading = true
@@ -110,7 +110,7 @@ module Page =
         | _ -> failwith "TODO"
 
     let viewPicker items map selectedItem onSelected =
-        View.Picker(
+        View.Picker (
             title = (if (Array.isEmpty items) then "Loading..." else "Select"),
             isEnabled = (not <| Array.isEmpty items),
             itemsSource = (items |> Array.map map),
@@ -118,31 +118,31 @@ module Page =
             selectedIndexChanged = (fun (x, _) -> onSelected x))
 
     let view model dispatch =
-        View.ContentPage(
-            content = View.StackLayout(
-                padding = 20.0, verticalOptions = LayoutOptions.Center, 
+        View.ContentPage (
+            content = View.StackLayout (
+                padding = 20.0, verticalOptions = LayoutOptions.Center,
                 isEnabled = not model.isLoading,
-                children = [ 
+                children = [
                     viewPicker model.countries (fun x -> x.Name) model.selectedCountry (curry ItemSelected Country >> dispatch)
                     viewPicker model.states (fun x -> x.Region) model.selectedState (curry ItemSelected State >> dispatch)
                     viewPicker model.cities (fun x -> x.City) model.selectedCity (curry ItemSelected City >> dispatch) ]))
 
 module Example4 =
-    open System
     open Fabulous.Core
+    open System
 
     type Effect<'a> = obj * (obj -> 'a) * Async<Result<'a, exn>>
 
-    let map (g : 'b -> 'c) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) : Effect<'c> = 
+    let map (g : 'b -> 'c) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) : Effect<'c> =
         box e, f >> g, async { let! x = a
                                return Result.map g x }
-    let map' (g : Result<'b, exn> -> 'c) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) : Effect<'c> = 
+    let map' (g : Result<'b, exn> -> 'c) (e : 'e, f : obj -> 'b, a : Async<Result<'b, exn>>) : Effect<'c> =
         box e, f >> Ok >> g, async { let! x = a
                                      return Ok <| g x }
 
     module Effects =
         let private catch a = async { let! x = a |> Async.Catch
-                                      return x |> function Choice1Of2 x -> Ok x | Choice2Of2 x -> Error x }
+                                      return x |> function | Choice1Of2 x -> Ok x | Choice2Of2 x -> Error x }
 
         type DownloadFromWeb = DownloadFromWeb of Uri
         let downloadFromWeb (uri : Uri) : Effect<string> =
@@ -150,38 +150,38 @@ module Example4 =
             (fun x -> box x :?> string),
             async { return! (new Net.WebClient()).DownloadStringTaskAsync uri |> Async.AwaitTask |> catch }
 
-        type MakeRandomEff = MakeRandomEff of min:int * max:int
-        let makeRandomEff min max : Effect<int> = 
-            box <| MakeRandomEff (min, max),
+        type MakeRandomEff = MakeRandomEff of min : int * max : int
+        let makeRandomEff min max : Effect<int> =
+            box <| MakeRandomEff(min, max),
             (fun x -> box x :?> int),
-            async { return (Random().Next(min,max)) } |> catch
-    
-    module Domain = 
+            async { return (Random().Next(min, max)) } |> catch
+
+    module Domain =
         type Type1 = Type1
         let foo (_ : string) : Type1 = failwith ""
 
-    type Msg = Msg0 | Msg1 of Result<Domain.Type1, exn> | Msg2 of Result<string, exn> | Msg3 of Result<int, exn>
+    type Msg = | Msg0 | Msg1 of Result<Domain.Type1, exn> | Msg2 of Result<string, exn> | Msg3 of Result<int, exn>
     type Model = Model
 
     let update (model : Model) (msg : Msg) =
         match msg with
         | Msg0 _ -> model, Effects.downloadFromWeb (Uri "") |> map Domain.foo |> map' Msg1
         | Msg1 _ -> model, Effects.downloadFromWeb (Uri "") |> map' Msg2
-        | Msg2 _ -> model, Effects.makeRandomEff 0 100 |> map' Msg3 
+        | Msg2 _ -> model, Effects.makeRandomEff 0 100 |> map' Msg3
         | Msg3 _ -> model, failwith "???"
 
-    let inline toCmdUpdate (update : 'model -> 'msg -> 'model * 'msg Effect) model msg =
+    let inline toCmdUpdate (update : 'model -> 'msg -> ('model * 'msg Effect)) model msg =
         update model msg |> (fun (_, (_, _, a)) -> Cmd.ofAsyncMsg a)
 
-    let update' (model : Model) (msg : Msg) = 
+    let update' (model : Model) (msg : Msg) =
         update model msg
 
-    let ``test Msg0`` () =
+    let ``test Msg0``() =
         let (model, (e, f, _)) = update Model (Msg2 <| Ok "")
         printf "assert model %O" (model = Model)
 
         let e' = e :?> Effects.DownloadFromWeb
-        printfn "assert effect %O" (e' = Effects.DownloadFromWeb (Uri ""))
+        printfn "assert effect %O" (e' = Effects.DownloadFromWeb(Uri ""))
 
-        let f' = match f "{}" with Msg1 x -> x | _ -> failwith ""
+        let f' = match f "{}" with | Msg1 x -> x | _ -> failwith ""
         printfn "assert Msg1 argument %O" (f' = Ok Domain.Type1)
