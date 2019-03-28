@@ -31,19 +31,19 @@ module Cmd =
         } |> Cmd.ofAsyncMsg
 
 module Effect =
-    let mutable private globalResponse : Option<obj -> unit> = None
+    let private globalResponse = new System.Threading.ThreadLocal<Option<obj -> unit>>(fun _ -> None)
 
     let runTest (f : 'eff -> unit) =
-        globalResponse <-
+        globalResponse.Value <-
             Some(fun eff ->
                     let x = eff :?> 'eff
                     f x)
 
     let wrap (fx : ('a -> unit) -> 'eff) (a : 'a Async) : 'a Async =
         async {
-            if Option.isSome globalResponse
+            if Option.isSome globalResponse.Value
                 then
-                    let testFunc = globalResponse.Value
+                    let testFunc = globalResponse.Value.Value
 
                     let mutable result : obj Option = None
 
@@ -55,52 +55,11 @@ module Effect =
                     let eff = Option.get effOpt
                     testFunc eff
 
-                    globalResponse <- None
+                    globalResponse.Value <- None
 
                     return (Option.get result) :?> 'a
                 else return! a
         }
-
-    let private exampleAsync (x : int) =
-        async {
-            do! Async.Sleep 1000
-            return sprintf "%i" x
-        }
-
-    type private ExampleAsyncEffect = ExampleAsyncEffect of int * (string -> unit)
-    let private exampleAsync' (x : int) : string Async =
-        exampleAsync x
-        |> wrap (fun r -> ExampleAsyncEffect(x, r))
-
-    type private Msg = Msg1 of string
-
-    // let ``test #2``() =
-    //     let a: Async<string> = downloadFromWeb (Uri "http://google.com/")
-
-    //     let aResult: string =
-    //         a
-    //         |> runTest (fun (DownloadString(arg, callback)) -> callback "{}")
-
-    //     let b: int Async = a >>- (fun x -> x.Length)
-
-    //     let bResult: int =
-    //         b
-    //         |> runTest (fun (DownloadString(arg, callback)) -> callback "{}")
-
-    //     ()
-
-    // let private test() =
-    //     let a : Cmd<Msg> = exampleAsync 42 >>- Msg1 |> Cmd.ofAsyncMsg
-    //     let d : Async<Msg> = exampleAsync' 42 >>- Msg1
-    //     let b : Cmd<Msg> = d |> Cmd.ofAsyncMsg
-
-    //     let result : Msg =
-    //         d
-    //         |> runTest (
-    //             fun (ExampleAsyncEffect(x, callback)) ->
-    //                 sprintf "%i" x
-    //                 |> callback)
-    //     result = (Msg1 "42") |> ignore
 
 module Effects =
     type DownloadString = DownloadString of Uri * (string -> unit)
